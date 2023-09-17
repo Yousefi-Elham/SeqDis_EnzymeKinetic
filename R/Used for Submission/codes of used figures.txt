@@ -1,0 +1,56 @@
+\begin{figure}[htp]
+	
+	\begin{minipage}{0.33\linewidth}
+		\centering
+		\subfloat[]{\label{plot.Tseq.procedure(com)a}\includegraphics[width= 4.5cm,height=4.5cm]{Tsequensial/f0gen/1-bothhat/plot.eps}}
+	\end{minipage}%
+	\begin{minipage}{.33\linewidth}
+		\centering
+		\subfloat[]{\label{plot.Tseq.procedure(com)b}\includegraphics[width= 4.5cm,height=4.5cm]{Tsequensial/f0gen/1-bothhat/sigma0.eps}}
+	\end{minipage}%
+	\begin{minipage}{.33\linewidth}
+		\centering
+		\subfloat[]{\label{plot.Tseq.procedure(com)c}\includegraphics[width= 4.5cm,height=4.5cm]{Tsequensial/f0gen/1-bothhat/sigma1.eps}}
+	\end{minipage}\par\medskip%%
+	\caption{{\footnotesize $T$-sequential procedure, the competitive model is used to generate the obs. (a): sequentially constructed designs, (b) and (c): residual standard error estimates of the competitive and noncompetitive models, respectively.}}
+	\label{plot.Tseq.procedure(com)}
+    \end{figure}
+
+
+
+\begin{figure}[t]
+   	
+   	\begin{minipage}{0.33\linewidth}
+   		\centering
+   		\subfloat[]{\label{plot.Dsseq.procedure(com)a}\includegraphics[width= 4.5cm,height=4.5cm]{Ds-newsequential/f0gen/plot-1.eps}}
+   	\end{minipage}%
+   \begin{minipage}{.33\linewidth}
+   	\centering
+   	\subfloat[]{\label{plot.Dsseq.procedure(com)b}\includegraphics[width= 4.5cm,height=4.5cm]{Ds-newsequential/f0gen/sigma2-2.eps}}
+   \end{minipage}%
+   	\begin{minipage}{.33\linewidth}
+   		\centering
+   		\subfloat[]{\label{plot.Dsseq.procedure(com)c}\includegraphics[width= 4.5cm,height=4.5cm]{Ds-newsequential/f0gen/lambda-1.eps}}
+   	\end{minipage}\par\medskip%%
+   	\caption{{\footnotesize $D_s$-sequential procedure, the competitive model is used to generate the obs. (a): sequential $D_s$-optimal designs, (b): residual standard error estimates of the encompassing model, (c): estimates of $\lambda$.}}
+   	\label{plot.Dsseq.procedure(com)}
+   \end{figure}
+
+
+\begin{figure}[htp]
+    	
+    	\begin{minipage}{0.33\linewidth}
+    		\centering
+    		\subfloat[]{\label{plot.Deltaseq.procedure(com)a}\includegraphics[width= 4.5cm,height=4.5cm]{deltasequential/f0gen/plot.eps}}
+    	\end{minipage}%
+    	\begin{minipage}{.33\linewidth}
+    		\centering
+    		\subfloat[]{\label{plot.Deltaseq.procedure(com)b}\includegraphics[width= 4.5cm,height=4.5cm]{deltasequential/f0gen/sigma0.eps}}
+    	\end{minipage}%
+    	\begin{minipage}{.33\linewidth}
+    		\centering
+    		\subfloat[]{\label{plot.Deltaseq.procedure(com)c}\includegraphics[width= 4.5cm,height=4.5cm]{deltasequential/f0gen/sigma1.eps}}
+    	\end{minipage}\par\medskip%%
+    	\caption{{\footnotesize $\delta$-sequential procedure, the competitive model is used to generate the obs. (a): sequential $\delta$-optimal designs, (b) and (c): residual standard error estimates of the competitive and noncompetitive models, respectively.}}
+    	\label{plot.Deltaseq.procedure(com)}
+    \end{figure}
