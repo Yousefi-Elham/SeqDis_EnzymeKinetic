@@ -1,3 +1,7 @@
+# This code calculates optimal designs for discriminating competitive 
+# and noncompetitive inhibition models using the Ds optimal method, sequentially.
+# here the Noncompetitive model is the data generator
+
 #Ds for non comp,when theta is thEstart,thEstart[1:3]
 par(mfrow=c(1,1))
 rm(list=ls())

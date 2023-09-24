@@ -1,4 +1,6 @@
-#method4-sse-eta-nls
+# This code calculates optimal designs for discriminating competitive 
+# and noncompetitive inhibition models using the Hunter and Reiner (1965) optimal method, sequentially.
+# here the Noncompetitive model is the data generator.
 
 rm(list=ls())
 par(mfrow=c(1,1))
