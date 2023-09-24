@@ -81,15 +81,4 @@ for(i in 1:length(quanDs)){
   earlyiterdsup[i] <- which(norm.sum.crit.ds >= quanDs[i])[1]
 }
 earlyiterdsup
-earlyiterdsup
-#[1] 126 249 365 443 476
 
-######################################
-earlyiterdsupf1
-#[1] 126 249 365 443 476
-
-earlyitertf1
-#[1] 118 126 126 155 178
-
-earlyiterdeltaf1
-#[1] 126 176 199 451 469

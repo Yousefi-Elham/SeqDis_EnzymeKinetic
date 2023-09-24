@@ -1,3 +1,7 @@
+# calculation of the theoretical 
+
+
+
 par(mfrow=c(1,1))
 rm(list=ls())
 set.seed(123456789)
@@ -69,10 +73,10 @@ design.optFdelta <- matrix( c(0,  0,       1,    0.002,
                               30, 20,       4,    0.008,
                               5, 12,       9 ,   0.018) ,nrow=27,ncol=4,byrow=T)
 
-th0l[iter,]<-th0start
-th0u[iter,]<-th0start
-th1l[iter,]<-th1start
-th1u[iter,]<-th1start
+th0l <-th0start-s0start
+th0u <-th0start+s0start
+th1l <-th1start-s1start
+th1u <-th1start+s1start
 
 
 
@@ -114,7 +118,7 @@ delta.func=function(xdes1,xdes2){
   }
   
   
-  crit_delta_sq<-bvls(cbind(F0.full, -F1.full), a1.full - a0.full, c(th0l[iter,],th1l[iter,]), c(th0u[iter,],th1u[iter,]))$deviance
+  crit_delta_sq<-bvls(cbind(F0.full, -F1.full), a1.full - a0.full, c(th0l,th1l), c(th0u,th1u))$deviance
   
   crit_delta_sq
   
@@ -122,8 +126,3 @@ delta.func=function(xdes1,xdes2){
 }
 
 delta.func(design.optFdelta[,1],design.optFdelta [,2])/nrow(design.optFdelta)
-
-#delta.func(design.optFdelta[,1],design.optFdelta [,2])
-#[1] 16.36807
-#> delta.func(design.optFdelta[,1],design.optFdelta [,2])/nrow(design.optFdelta)
-#[1] 0.6062247

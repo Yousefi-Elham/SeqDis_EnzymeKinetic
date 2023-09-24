@@ -1,6 +1,13 @@
-#method4-sse-eta-nls-f1
+# This code calculates optimal designs for discriminating competitive 
+# and noncompetitive inhibition models using the delta method, sequentially.
+# here the competitive model is the data generator
 
-#Delta seq noncompat
+# xstart denotes the starting design.
+# th0start and s0start denotes the parameter estimates and their std. errors
+# of the competitive model.
+# th1start and s1start reflect similar estimates for the noncompetitive model
+
+
 par(mfrow=c(1,1))
 rm(list=ls())
 set.seed(123456789)
@@ -53,7 +60,7 @@ S1SEq= S0SEq = th1l=th0l=th0u=th1u=matrix(0,max.iter,3)
 num.max=numeric(max.iter)
 maxdev.vec2=norm.sum.crit.delta=sum.crit.delta=sigma0hat=sigma1hat=cexxx=numeric(max.iter)
 
-# Model 0  (comp)
+# Model 0  (competitve model)
 f0 <- function(S, I, th){
   V <- th[1]
   Km <- th[2]
@@ -61,7 +68,7 @@ f0 <- function(S, I, th){
   V * S / (Km * (1 + I/Kic) + S)
 }
 
-# Model 1  (non comp)
+# Model 1  (non competitive model)
 f1 <- function(S, I, th){
   V <- th[1]
   Km <- th[2]
@@ -72,7 +79,7 @@ f1 <- function(S, I, th){
 
 par(mar=c(5.1, 4.1, 4.1, 4.1))
 plot(xstart1, xstart2, type = "n",xlab="x1",ylab="x2",pch=16,col="blue",cex.main=2, cex.lab=1.5, cex.axis=1.5); grid()
-points(xstart1, xstart2,col=colorgrad[1], pch=16,cex=0.8)
+points(xstart1, xstart2, col=colorgrad[1], pch=16,cex=0.8)
 
 gradientLegend(valRange=c(1,max.iter),color = c("lightblue","cornflowerblue", "darkblue"),
                nCol = 4,inside = FALSE, pos=.825,dec = 0,n.seg=3,cex.main=2, cex.lab=1.5, cex.axis=1.5)
@@ -93,6 +100,7 @@ while(iter< max.iter){
   #text(x=iter+1,y=iter,iter,col="red")
   
   
+  # calculation of parameter and std. error estimates at each iteration
   m0par.est<-nls(y~b1*basia[,2]/(b2*(1+basia[,3]/b3)+basia[,2]),algorithm="port",lower=c(0.001,0.001,0.001),upper=c(Inf,Inf,Inf), start= list(b1=th0start[1],b2=th0start[2],b3=th0start[3]), data=data.frame(basia))
   THETA.HAT[iter,1:3]=th0start<-summary(m0par.est)$parameters[,1]
   S0SEq[iter,] = s0start<-summary(m0par.est)$parameters[,2]
@@ -111,7 +119,7 @@ while(iter< max.iter){
   th1u[iter,]<-th1start+1*s1start
   
   
-  
+  # calculation of sequential delta optimal designs using estimated parameters and std. errors
   delta.func=function(xdes1,xdes2){
     
     
@@ -163,19 +171,21 @@ while(iter< max.iter){
     ad.crit[k] <-  delta.func(test.des[,1],test.des[,2]) 
   }
   
-  
+  # extracting the newly constructed design
   ad.ind <- which.max(ad.crit)
   ad.point <- grid[ad.ind,]
   xnew <- ad.point
   xstart<-rbind(xstart,xnew)
   
+  
+  # calculation of normalized criterion values
   sum.crit.delta[iter] <- max(ad.crit)
   norm.sum.crit.delta[iter] <- max(ad.crit)/nrow(xstart)
   maxdev.vec2[iter]<-max(ad.crit)/nrow(xstart)^2
   
   
   
-  
+  # generating the corresponding observation at the newly constructed design
   ynew<-f0(xnew[1], xnew[2], TH0START)+rnorm(1, sd = SIG0)
   if(ynew<0) ynew<-0
   
@@ -194,6 +204,7 @@ while(iter< max.iter){
   
 }
 
+# unique design values and their proportions of replication
 design1.uniq=uniquecombs(xstart)
 count1=attr(design1.uniq,"index")
 count2=unique(sort(count1))
@@ -407,13 +418,6 @@ lgtxt0=c(expression(paste(hat(sigma[V]),sep="")),
 legend(450,3,legend=lgtxt0,col=c("blue","red","darkgreen"),pch=16,bty="n",cex=1.5, pt.cex = 1)
 
 dev.off()
-#--------------------------------#-------------------------------
-max(S1SEq)
-max(S0SEq)
-
-which(S0SEq[,1] <= SIG0)[1]
-which(S0SEq[,2] <= SIG0)[1]
-which(S0SEq[,3] <= SIG0)[1]
 
 #########################################################################
 jpeg("G:/Other computers/My Computer/3files/2021/3-March/seq-witheff/NewSequential-Thes/deltaf0/Deltaf0ZThesis/sigmapars1.jpeg")

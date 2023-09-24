@@ -1,6 +1,13 @@
-#method4-sse-eta-nls-f1
+# This code calculates optimal designs for discriminating competitive 
+# and noncompetitive inhibition models using the delta method, sequentially.
+# here the Noncompetitive model is the data generator
 
-#Delta seq noncompat
+# xstart denotes the starting design.
+# th0start and s0start denotes the parameter estimates and their std. errors
+# of the competitive model.
+# th1start and s1start reflect similar estimates for the noncompetitive model
+
+
 par(mfrow=c(1,1))
 rm(list=ls())
 set.seed(123456789)
@@ -416,13 +423,6 @@ lgtxt0=c(expression(paste(hat(sigma[V]),sep="")),
 legend(440,3,legend=lgtxt0,col=c("blue","red","darkgreen"),pch=16,bty="n",cex=1.5, pt.cex = 1)
 
 dev.off()
-#--------------------------------#-------------------------------
-max(S1SEq)
-max(S0SEq)
-
-which(S0SEq[,1] <= SIG0)[1]
-which(S0SEq[,2] <= SIG0)[1]
-which(S0SEq[,3] <= SIG0)[1]
 
 #########################################################################
 jpeg("G:/Other computers/My Computer/3files/2021/3-March/seq-witheff/NewSequential-Thes/deltaf1/Deltaf1ZThesis/sigmapars1.jpeg")

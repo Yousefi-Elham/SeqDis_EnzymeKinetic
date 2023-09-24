@@ -46,26 +46,9 @@ norm.sum.crit.t <- c(
 plot(seq(1:max.iter),norm.sum.crit.t  , type = "p",ylim=c(0,0.3),xlab="iter",ylab="Norm.Criterion T",pch=16,col="blue")
 abline(h=max(norm.sum.crit.t ),lty=2,col="red")
 
-max(norm.sum.crit.t)
-
-quantile(norm.sum.crit.t)
-per0.5 <- quantile(norm.sum.crit.t )[3]-quantile(norm.sum.crit.t )[1]
-per0.5 / (max(norm.sum.crit.t )-min(norm.sum.crit.t ))
-
-#compute
-which(norm.sum.crit.t >= max(norm.sum.crit.t)/2)[1]
-
-which(norm.sum.crit.t  >= 3*norm.sum.crit.t [1])[1]
-length(which(norm.sum.crit.t  >= 3*norm.sum.crit.t[1]))
-boxplot(norm.sum.crit.t )
 
 quanT <-  c(0.25,0.5,0.75,0.9,0.95)
 quanT
-#25%       50%       75%       90%       95% 
-#0.2628577 0.2651733 0.2674111 0.2696093 0.2712221 
-
-#round 25%    50%    75%    90%    95% 
-#    0.2629 0.2652 0.2674 0.2696 0.2712 
 
 earlyitert <- numeric(length(quanT))
 for(i in 1:length(quanT)){
@@ -79,10 +62,7 @@ for(i in 1:length(quanT)){
   earlyitert11[i] <- which(norm.sum.crit.t >= 0.2677787*quanT[i])[1]
 }
 earlyitert11
-[1]  2  3 15 29 89
 
 #---------------------
 Quan <- round(quantile(norm.sum.crit.t, probs= c(0.25,0.5,0.75,0.9,0.95)),digits=4)
 Quan
-25%    50%    75%    90%    95% 
-0.2629 0.2652 0.2674 0.2696 0.2712 
