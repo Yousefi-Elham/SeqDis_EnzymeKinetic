@@ -1,4 +1,5 @@
-# calculation of the theoretical 
+# calculation of the theoretical upper bound of the normalized criterion values
+# in the delta optimality approach
 
 
 
