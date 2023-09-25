@@ -17,6 +17,8 @@ library(bvls)
 library(stats)
 library(plotfunctions)
 
+
+# starting design
 xstart = matrix(c(0.00, 0.00,
                   0.00, 30.00,
                   0.00, 60.00,
@@ -31,16 +33,22 @@ xstart = matrix(c(0.00, 0.00,
 xstart1=xstart[,1]
 xstart2=xstart[,2]
 
+
+#starting parameter estimates and their std. errors
 th0start <- c(7.298, 4.386, 2.582)
 s0start <- c(0.114, 0.233, 0.145)
 th1start <- c(8.696, 8.066, 12.057)
 s1start<- c(0.222, 0.488, 0.671)
 
+
+#fixed parameter values for data generation purposes
 TH0START<-c(7.298, 4.386, 2.582)
 TH1START<- c(8.696, 8.066, 12.057)
 SIG0<-0.1553
 SIG1<-0.2272
 
+
+#grid of points
 x1g=seq(0,30,length=31)
 x2g=seq(0,60,length=61)
 grid=expand.grid(x1=x1g,x2=x2g)
@@ -60,7 +68,7 @@ S1SEq= S0SEq = th1l=th0l=th0u=th1u=matrix(0,max.iter,3)
 num.max=numeric(max.iter)
 maxdev.vec2=norm.sum.crit.delta=sum.crit.delta=sigma0hat=sigma1hat=cexxx=numeric(max.iter)
 
-# Model 0  (competitve model)
+# Model 0  (competitive model)
 f0 <- function(S, I, th){
   V <- th[1]
   Km <- th[2]
@@ -68,7 +76,7 @@ f0 <- function(S, I, th){
   V * S / (Km * (1 + I/Kic) + S)
 }
 
-# Model 1  (non competitive model)
+# Model 1  (noncompetitive model)
 f1 <- function(S, I, th){
   V <- th[1]
   Km <- th[2]
@@ -85,7 +93,7 @@ gradientLegend(valRange=c(1,max.iter),color = c("lightblue","cornflowerblue", "d
                nCol = 4,inside = FALSE, pos=.825,dec = 0,n.seg=3,cex.main=2, cex.lab=1.5, cex.axis=1.5)
 
 
-
+# data generation from the assumed true model
 y<-f0(xstart1, xstart2, TH0START)+rnorm(nrow(xstart), sd = SIG0)
 for(i in 1:length(y)){
   if(y[i]<0) y[i]<-0
@@ -93,6 +101,8 @@ for(i in 1:length(y)){
 
 basia <- cbind(y,xstart)
 
+
+# sequential process
 while(iter< max.iter){
   iter=iter+1
   print(iter)
@@ -165,6 +175,7 @@ while(iter< max.iter){
     
   }
   
+  #maximization step
   ad.crit <- numeric(nrow(grid))
   for(k in 1:nrow(grid)){
     test.des <- rbind(xstart,grid[k,])
@@ -193,10 +204,8 @@ while(iter< max.iter){
   y <- c(y,ynew) 
   
   
-  
   cexxx=(length(which(xstart[,1]==xnew[1]&xstart[,2]==xnew[2])))^(1/2)
   points(xnew[1], xnew[2], type = "p",col=colorgrad[iter], pch=16,cex=0.8*cexxx,cex.main=2, cex.lab=1.5, cex.axis=1.5 )
-  
   
   
   basia <- cbind(y,xstart)
@@ -244,13 +253,9 @@ par(mfrow=c(1,1))
 #des.plot(design.opt)
 ##########################################################
 max(norm.sum.crit.delta)
-#[1] 0.2676615
 
 
 quantile(norm.sum.crit.delta)
-
-#0%        25%        50%        75%       100% 
-#0.03187914 0.25946589 0.26341278 0.26461076 0.26766149 
 
 
 quanT <-  c(0.25,0.5,0.75,0.9,0.95)
@@ -262,9 +267,10 @@ for(i in 1:length(quanT)){
   earlyitert[i] <- which(norm.sum.crit.delta >= max(norm.sum.crit.delta)*quanT[i])[1]
 }
 earlyitert
-#[1]  3  9 26 58 87
 
-#--------------------------------#-------------------------------
+
+###### This part contains plotting multiple variables, designs, estimates from the code ######
+
 jpeg("G:/Other computers/My Computer/3files/2021/3-March/seq-witheff/NewSequential-Thes/deltaf0/Deltaf0ZThesis/maxdev2.jpeg")
 
 par(mgp=c(2.5, 1, 0)) 

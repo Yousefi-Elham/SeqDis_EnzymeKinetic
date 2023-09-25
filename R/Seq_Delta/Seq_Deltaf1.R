@@ -17,6 +17,8 @@ library(bvls)
 library(stats)
 library(plotfunctions)
 
+
+# starting designs
 xstart = matrix(c(0.00, 0.00,
                   0.00, 30.00,
                   0.00, 60.00,
@@ -31,16 +33,21 @@ xstart = matrix(c(0.00, 0.00,
 xstart1=xstart[,1]
 xstart2=xstart[,2]
 
+# starting parameter values and std. errors
 th0start <- c(7.298, 4.386, 2.582)
 s0start <- c(0.114, 0.233, 0.145)
 th1start <- c(8.696, 8.066, 12.057)
 s1start<- c(0.222, 0.488, 0.671)
 
+
+# fixed parameter values for the assumed true model
 TH0START<-c(7.298, 4.386, 2.582)
 TH1START<- c(8.696, 8.066, 12.057)
 SIG0<-0.1553
 SIG1<-0.2272
 
+
+# grid of points
 x1g=seq(0,30,length=31)
 x2g=seq(0,60,length=61)
 grid=expand.grid(x1=x1g,x2=x2g)
@@ -60,7 +67,7 @@ S1SEq= S0SEq = th1l=th0l=th0u=th1u=matrix(0,max.iter,3)
 num.max=numeric(max.iter)
 maxdev.vec2=norm.sum.crit.delta=sum.crit.delta=sigma0hat=sigma1hat=cexxx=numeric(max.iter)
 
-# Model 0  (comp)
+# Model 0  (competitive model)
 f0 <- function(S, I, th){
   V <- th[1]
   Km <- th[2]
@@ -68,7 +75,7 @@ f0 <- function(S, I, th){
   V * S / (Km * (1 + I/Kic) + S)
 }
 
-# Model 1  (non comp)
+# Model 1  (noncompetitve model)
 f1 <- function(S, I, th){
   V <- th[1]
   Km <- th[2]
@@ -85,7 +92,7 @@ gradientLegend(valRange=c(1,max.iter),color = c("lightblue","cornflowerblue", "d
                nCol = 4,inside = FALSE, pos=.825,dec = 0,n.seg=3,cex.main=2, cex.lab=1.5, cex.axis=1.5)
 
 
-
+# data generation from the noncompetitve model
 y<-f1(xstart1, xstart2, TH1START)+rnorm(nrow(xstart), sd = SIG1)
 for(i in 1:length(y)){
   if(y[i]<0) y[i]<-0
@@ -100,6 +107,7 @@ while(iter< max.iter){
   #text(x=iter+1,y=iter,iter,col="red")
   
   
+  # parameter estimation
   m0par.est<-nls(y~b1*basia[,2]/(b2*(1+basia[,3]/b3)+basia[,2]),algorithm="port",lower=c(0.001,0.001,0.001),upper=c(Inf,Inf,Inf), start= list(b1=th0start[1],b2=th0start[2],b3=th0start[3]), data=data.frame(basia))
   THETA.HAT[iter,1:3]=th0start<-summary(m0par.est)$parameters[,1]
   S0SEq[iter,] = s0start<-summary(m0par.est)$parameters[,2]
@@ -164,13 +172,14 @@ while(iter< max.iter){
     
   }
   
+  # maximization step
   ad.crit <- numeric(nrow(grid))
   for(k in 1:nrow(grid)){
     test.des <- rbind(xstart,grid[k,])
     ad.crit[k] <-  delta.func(test.des[,1],test.des[,2]) 
   }
   
-  
+  # new design point
   ad.ind <- which.max(ad.crit)
   ad.point <- grid[ad.ind,]
   xnew <- ad.point
@@ -201,6 +210,8 @@ while(iter< max.iter){
   
 }
 
+
+# unique design sets with their proportion of replication
 design1.uniq=uniquecombs(xstart)
 count1=attr(design1.uniq,"index")
 count2=unique(sort(count1))
@@ -237,16 +248,10 @@ min(sigma1hat)
 max(sigma1hat)
 
 par(mfrow=c(1,1))
-#des.plot(design.opt)
 ##########################################################
 max(norm.sum.crit.delta)
-#[1] 0.2389011
-
 
 quantile(norm.sum.crit.delta)
-
-#0%        25%        50%        75%       100% 
-#0.03187914 0.25946589 0.26341278 0.26461076 0.26766149 
 
 
 quanT <-  c(0.25,0.5,0.75,0.9,0.95)
@@ -258,9 +263,9 @@ for(i in 1:length(quanT)){
   earlyitert[i] <- which(norm.sum.crit.delta >= max(norm.sum.crit.delta)*quanT[i])[1]
 }
 earlyitert
-#[1]   6  22  60 105 138
 
-#--------------------------------#-------------------------------
+######## This part contains plotting multiple variables, designs, estimates from the code ######
+
 jpeg("G:/Other computers/My Computer/3files/2021/3-March/seq-witheff/NewSequential-Thes/deltaf1/Deltaf1ZThesis/maxdev2.jpeg")
 
 par(mgp=c(2.5, 1, 0)) 
