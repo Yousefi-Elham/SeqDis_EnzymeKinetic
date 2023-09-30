@@ -1,4 +1,7 @@
+#xstart represents the optimal design, resulting from the sequential procedure. 
+# We now want to check the criterion value, using this optimal design.
 #Tf1
+
 xstart = matrix(c(30.00, 0.00, 0.063,
                   3.214, 0.00, 0.063,
                   30.00, 21.413,0.31,
