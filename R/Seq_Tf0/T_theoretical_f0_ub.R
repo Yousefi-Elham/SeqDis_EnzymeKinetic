@@ -1,3 +1,6 @@
+#xstart represents the optimal design, resulting from the sequential procedure. 
+# We now want to check the criterion value, using this optimal design.
+
 xstart = matrix(c(30.00, 0.00, 0.060,
                   3.08, 0.00, 0.25,
                   30.00, 22.751,0.25,
