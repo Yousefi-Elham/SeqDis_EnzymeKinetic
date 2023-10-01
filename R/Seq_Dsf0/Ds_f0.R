@@ -3,7 +3,6 @@
 # here the competitive model is the data generator
 
 
-#Ds for non comp,when theta is thEstart,thEstart[1:3]
 par(mfrow=c(1,1))
 rm(list=ls())
 set.seed(123456789)
@@ -31,6 +30,10 @@ xstart2=xstart[,2]
 n <- nrow(xstart)
 wstart=c(rep((1/n),n))
 
+
+#prior parameter values resulting from parameter est. in 120 real data
+
+#prior values
 th0start <- c(7.298, 4.386, 2.582)
 s0start <- c(0.114, 0.233, 0.145)
 th1start <- c(8.696, 8.066, 12.057)
@@ -70,7 +73,7 @@ norm.sum.crit.ds=sum.crit.ds=max.sen.crit.ds=sigmaEhat=sigma1hat=numeric(max.ite
 
 ####################################################
 
-# Model 0  (comp)
+# Model 0: competitive model as a function of parameters and design points
 f0 <- function(S, I, th){
   V <- th[1]
   Km <- th[2]
@@ -78,7 +81,7 @@ f0 <- function(S, I, th){
   V * S / (Km * (1 + I/Kic) + S)
 }
 
-# Model 1  (non comp)
+# Model 1: non competitive model as a function of parameters and design points
 f1 <- function(S, I, th){
   V <- th[1]
   Km <- th[2]
@@ -109,14 +112,15 @@ gradientLegend(valRange=c(1,max.iter),color = c("lightblue","cornflowerblue", "d
 #text(x=31.5, y = 62, lables=expression("Tttitle"))
 
 
-y<-f0(xstart1, xstart2, TH0START)+rnorm(nrow(xstart), sd = SIG0)
+# data generator model (competitive model)
+y <- f0(xstart1, xstart2, TH0START)+rnorm(nrow(xstart), sd = SIG0)
 for(i in 1:length(y)){
   if(y[i]<0) y[i]<-0
 }
 
-basia<-data.frame(y,xstart)
+basia <- data.frame(y,xstart)
 #------------------------------------------------------------------
-
+# iterates the whole sequential procedure to calculate optimal designs
 while(iter< max.iter){
   iter=iter+1
   print(iter)
@@ -124,6 +128,7 @@ while(iter< max.iter){
   #                                                        Theta.HAT
   #-----------------------------------------------------------------------------------------------------------------------  
   
+  # parameter estimation: parameters are updated at each step
   mEpar.est<-nls(y~b1*basia[,2]/(b2*(1+basia[,3]/b3)+basia[,2]*(1+(1-b4)*basia[,3]/b3)),algorithm="port",lower=c(0.001,0.001,0.001,0.0001),upper=c(Inf,Inf,Inf,0.9636), start= list(b1=thEstart[1],b2=thEstart[2],b3=thEstart[3],b4=thEstart[4]), data=basia)
   THETA.HAT[iter,]=thEstart<-summary(mEpar.est)$parameters[,1]
   SESEq[iter,] = sEstart<-summary(mEpar.est)$parameters[,2]
@@ -135,9 +140,9 @@ while(iter< max.iter){
   #-----------------------------------------------------------------------------------------------------------------------  
   
   #-----------------------------------------------------
-  #F0.full <- matrix(0, nrow = nrow(xstart), ncol = 3)
-  #F1.full <- matrix(0, nrow = nrow(xstart), ncol = 3)
   
+  # calculates the first derivative of the parameters of the encompassing model
+  # it is a function of parameter estimates and design supports
   F.deriv <- function(thE,support){
     
     FE3.full <- matrix(0, nrow = nrow(support), ncol = 3)
@@ -165,25 +170,20 @@ while(iter< max.iter){
   FE.full.mat <- deriv.result$FE.full
   FE3.full.mat <- deriv.result$FE3.full
   
-  
+  # full information matrix
   M.mat <- t(FE.full.mat) %*% FE.full.mat
+  
+  # information matrix of the nuisance parameters
   ME3.mat <- t(FE3.full.mat) %*% FE3.full.mat  
   #ME3.mat <- M.mat[1:3,1:3]
   
-  ds.funct<-function(xx1,xx2){
+  # Ds variance function to calculate the next support point
+  ds.funct <- function(xx1,xx2){
     
     f0.full <- matrix(0, nrow = 1, ncol = 3)
     f1.full <- matrix(0, nrow = 1, ncol = 3)
     fE3.full <- matrix(0, nrow = 1, ncol = 3)
     fE.full <- matrix(0, nrow = 1, ncol = 4)
-    
-    #a <- thEstart[1] * xx1 
-    #b <- 1 + xx2 / thEstart[3]
-    #cc <- 1 + (1-0.9636) * xx2 / thEstart[3]
-    #d <- (b * thEstart[2]) + (xx1 * cc)
-    #fE3.full[1] <- xx1 / d
-    #fE3.full[2] <- -a / d^2 * b
-    #fE3.full[3] <- a / d^2 * ((thEstart[2] + xx1 * (1-0.9636)) * xx2 / thEstart[3]^2)
     
     
     a <- thEstart[1] * xx1 
@@ -202,7 +202,7 @@ while(iter< max.iter){
     d<-fE.full%*%ginv(M.mat)%*%t(fE.full)-fE3.full%*%ginv(ME3.mat)%*%t(fE3.full)
     d
   }
-  d.value<-mapply(ds.funct,grid[,1],grid[,2])
+  d.value <- mapply(ds.funct,grid[,1],grid[,2])
   
   max.sen.crit.ds[iter]<-max(d.value)
   xnew<-c(grid[which.max(d.value),1],grid[which.max(d.value),2])
@@ -223,10 +223,10 @@ while(iter< max.iter){
   norm.sum.crit.ds[iter] <- Cri.val/nrow(xstart)
   
   
-  ynew<-f0(xnew[1], xnew[2], TH0START)+rnorm(1, sd = SIG0)
+  ynew <- f0(xnew[1], xnew[2], TH0START)+rnorm(1, sd = SIG0)
   if(ynew<0) ynew<-0
   
-  y<-c(y,ynew) 
+  y <- c(y,ynew) 
   
   
   cexxx=(length(which(xstart[,1]==xnew[1]&xstart[,2]==xnew[2])))^(1/2)
