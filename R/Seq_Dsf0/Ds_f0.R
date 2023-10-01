@@ -13,6 +13,7 @@ library(plotfunctions)
 library(numDeriv)
 library(MASS) #generalized inverse
 
+# starting design
 xstart = matrix(c(0.00, 0.00,
                   0.00, 30.00,
                   0.00, 60.00,
@@ -30,10 +31,7 @@ xstart2=xstart[,2]
 n <- nrow(xstart)
 wstart=c(rep((1/n),n))
 
-
 #prior parameter values resulting from parameter est. in 120 real data
-
-#prior values
 th0start <- c(7.298, 4.386, 2.582)
 s0start <- c(0.114, 0.233, 0.145)
 th1start <- c(8.696, 8.066, 12.057)
@@ -89,7 +87,7 @@ f1 <- function(S, I, th){
   V * S / ((Km + S) * (1 + I/Kin))
 }
 
-# Model 2  (encompassing)
+# Model 2  (encompassing model)
 fE <- function(S, I, th){
   V <- th[1]
   Km <- th[2]
@@ -142,7 +140,7 @@ while(iter< max.iter){
   #-----------------------------------------------------
   
   # calculates the first derivative of the parameters of the encompassing model
-  # it is a function of parameter estimates and design supports
+  # it is a function of parameter estimates and support points
   F.deriv <- function(thE,support){
     
     FE3.full <- matrix(0, nrow = nrow(support), ncol = 3)
