@@ -143,7 +143,7 @@ while(iter< max.iter){
     
     
     
-    
+    # constructing the design
     for(ii in 1:N){
       
       x1 <- xdes1[ii]
@@ -182,7 +182,7 @@ while(iter< max.iter){
     ad.crit[k] <-  delta.func(test.des[,1],test.des[,2]) 
   }
   
-  # extracting the newly constructed design
+  # extracting the newly constructed design, which maximizes the crit.
   ad.ind <- which.max(ad.crit)
   ad.point <- grid[ad.ind,]
   xnew <- ad.point
